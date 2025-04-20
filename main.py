@@ -48,4 +48,4 @@ def api_calcola_somma():
 
 # Avvia il server
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
