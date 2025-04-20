@@ -1,58 +1,51 @@
-from flask import Flask, jsonify, request
-from prettytable import PrettyTable
+from flask import Flask, jsonify, request, render_template
+from programma_sequenze_aritmetiche import (
+    calcola_termine_n,
+    calcola_da_due_termini,
+    calcola_somma_n
+)
 
 app = Flask(__name__)
 
-# Funzione per il menu
-def menu():
-    table = PrettyTable(["No", "Menu"])
-    table.add_row(["1", "Barisan Aritmatika"])
-    table.add_row(["2", "Jika info suku hanya 2"])
-    table.add_row(["3", "Deret Aritmatika"])
-    return table.get_string()
+# Route per la pagina principale
+@app.route('/')
+def home():
+    return render_template("index.html")  # index.html deve essere in /templates
 
-# Endpoint per il menu
-@app.route('/api/menu', methods=['GET'])
-def get_menu():
-    return menu()
-
-# Funzione per calcolare Barisan Aritmatika
+# API per calcolare il termine n-esimo
 @app.route('/api/aritmatika1', methods=['POST'])
-def calculate_aritmatika1():
+def api_calcola_termine_n():
     data = request.json
-    Un = data['suku-n']
-    a = data['suku-pertama']
-    b = data['beda']
-    
-    hasilakhir = a + (Un - 1) * b
-    return jsonify({'hasil': hasilakhir})
+    n = int(data['suku-n'])
+    a = int(data['suku-pertama'])
+    b = int(data['beda'])
 
-# Funzione per calcolare Jika info suku hanya 2
+    risultato = calcola_termine_n(n, a, b)
+    return jsonify({'hasil': risultato})
+
+# API per calcolare a e b da due termini noti
 @app.route('/api/aritmatika2', methods=['POST'])
-def calculate_aritmatika2():
+def api_calcola_da_due_termini():
     data = request.json
-    info1 = data['suku-n1']
-    info2 = data['suku-n2']
-    hasil1 = data['nilai-u1']
-    hasil2 = data['nilai-u2']
-    
-    nb = hasil2 - hasil1
-    i21 = (info2 - 1) - (info1 - 1)
-    nilaib = nb / i21
-    nilaia = hasil1 - (info1 - 1) * nilaib
-    
-    return jsonify({'nilai-a': nilaia, 'nilai-b': nilaib})
+    n1 = int(data['suku-n1'])
+    n2 = int(data['suku-n2'])
+    u1 = int(data['nilai-u1'])
+    u2 = int(data['nilai-u2'])
 
-# Funzione per calcolare Deret Aritmatika
+    risultato = calcola_da_due_termini(n1, n2, u1, u2)
+    return jsonify(risultato)
+
+# API per calcolare la somma dei primi n termini
 @app.route('/api/aritmatika3', methods=['POST'])
-def calculate_aritmatika3():
+def api_calcola_somma():
     data = request.json
-    Sn = data['jumlah-n']
-    a = data['suku-pertama']
-    b = data['beda']
-    
-    nilaiakhir = (Sn / 2) * (2 * a + (Sn - 1) * b)
-    return jsonify({'jumlah': nilaiakhir})
+    n = int(data['jumlah-n'])
+    a = int(data['suku-pertama'])
+    b = int(data['beda'])
 
+    somma = calcola_somma_n(n, a, b)
+    return jsonify({'jumlah': somma})
+
+# Avvia il server
 if __name__ == '__main__':
     app.run(debug=True)

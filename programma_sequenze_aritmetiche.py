@@ -1,96 +1,60 @@
-# Importa la libreria PrettyTable per formattare le tabelle
-from prettytable import PrettyTable
+# programma_sequenze_aritmetiche.py
 
-# Funzione per mostrare il menu principale
-def menu():
-    table = PrettyTable(["No", "Menu"])
-    table.add_row(["1", "Calcolo del n-esimo termine di una sequenza aritmetica"])
-    table.add_row(["2", "Calcolo di informazioni specifiche su due termini di una sequenza aritmetica"])
-    table.add_row(["3", "Calcolo della somma dei primi n elementi di una sequenza aritmetica"])
-    print("Menu:")
-    print(table)
+"""
+Modulo per il calcolo delle sequenze aritmetiche.
+Contiene funzioni per:
+- calcolo del termine n-esimo
+- calcolo dei coefficienti a e b dati due termini noti
+- calcolo della somma dei primi n termini
+"""
 
-# Funzione per calcolare il n-esimo termine di una sequenza aritmetica
-def aritmetica1():
-    print("Calcolo del n-esimo termine di una sequenza aritmetica")
-    print("-------------------------------------")
-    Un = int(input("Inserisci il numero del termine (n): "))
-    a = int(input("Inserisci il primo termine della sequenza (a): "))
-    b = int(input("Inserisci la differenza tra i termini successivi (b): "))
-    print("Formula: Un = a + (n-1) * b")
-    print(f"U{Un} = {a} + ({Un}-1) * {b}")
-    risultato = a + (Un - 1) * b
-    print(f"U{Un} = {risultato}")
-    print("")
-    back = input("Digita 'y' per tornare al menu principale: ").lower()
-    if back == 'y':
-        return menu()
-    else:
-        return
 
-# Funzione per calcolare informazioni specifiche su due termini della sequenza aritmetica
-def aritmetica2():
-    print("Calcolo di informazioni specifiche su due termini di una sequenza aritmetica")
-    print("-------------------------------------")
-    info1 = int(input("Inserisci il numero del primo termine (n1): "))
-    info2 = int(input("Inserisci il numero del secondo termine (n2): "))
-    valore1 = int(input(f"Inserisci il valore di U{info1}: "))
-    valore2 = int(input(f"Inserisci il valore di U{info2}: "))
-    
-    nb = valore2 - valore1
-    i21 = (info2 - 1) - (info1 - 1)
-    valoreB = nb / i21
-    valoreA = valore1 - (info1 - 1) * valoreB
-    
-    termineScelto = int(input("Inserisci il termine da calcolare: "))
-    termineScelto1 = termineScelto - 1
-    print(f"Il termine {termineScelto} è {valoreA + termineScelto1 * valoreB}")
-    print("")
-    back = input("Digita 'y' per tornare al menu principale: ").lower()
-    if back == 'y':
-        return menu()
-    else:
-        return
+def calcola_termine_n(n: int, a: int, b: int) -> int:
+    """
+    Calcola il n-esimo termine di una sequenza aritmetica.
+    Formula: Un = a + (n - 1) * b
 
-# Funzione per calcolare la somma dei primi n elementi di una sequenza aritmetica
-def aritmetica3():
-    print("Calcolo della somma dei primi n elementi di una sequenza aritmetica")
-    print("-------------------------------------")
-    Sn = int(input("Inserisci il numero totale di elementi (n): "))
-    a = int(input("Inserisci il primo termine della sequenza (a): "))
-    b = int(input("Inserisci la differenza tra i termini successivi (b): "))
-    
-    valoreFinale = (Sn / 2) * (2 * a + (Sn - 1) * b)
-    print(f"La somma dei primi {Sn} elementi è {valoreFinale}")
-    print("")
-    back = input("Digita 'y' per tornare al menu principale: ").lower()
-    if back == 'y':
-        return menu()
-    else:
-        return
+    :param n: posizione del termine da calcolare
+    :param a: primo termine della sequenza
+    :param b: differenza tra i termini
+    :return: valore del termine n-esimo
+    """
+    return a + (n - 1) * b
 
-# Funzione principale per eseguire il programma
-def main():
-    menu()
-    scelta = input("Scegli un'operazione (1/2/3): ")
-    print("")
 
-    while scelta in ('1', '2', '3'):
-        if scelta == '1':
-            aritmetica1()
-        elif scelta == '2':
-            aritmetica2()
-        elif scelta == '3':
-            aritmetica3()
-        else:
-            print("Scelta non valida. Scegli un'operazione corretta.")
-        
-        print("")
-        scelta = input("Scegli un'operazione (1/2/3): ")
-        print("")
+def calcola_da_due_termini(n1: int, n2: int, u1: int, u2: int) -> dict:
+    """
+    Calcola a (termine iniziale) e b (differenza) dati due termini della sequenza.
 
-    print("Uscita dal programma.")
+    :param n1: posizione del primo termine noto
+    :param n2: posizione del secondo termine noto
+    :param u1: valore del primo termine
+    :param u2: valore del secondo termine
+    :return: dizionario con 'nilai-a' e 'nilai-b'
+    """
+    differenza_valori = u2 - u1
+    differenza_posizioni = (n2 - 1) - (n1 - 1)
 
-# Esegui la funzione principale al lancio dello script
-if __name__ == "__main__":
-    main()
+    if differenza_posizioni == 0:
+        raise ValueError("Le posizioni n1 e n2 non possono essere uguali.")
+
+    b = differenza_valori / differenza_posizioni
+    a = u1 - (n1 - 1) * b
+
+    return {
+        'nilai-a': a,
+        'nilai-b': b
+    }
+
+
+def calcola_somma_n(n: int, a: int, b: int) -> float:
+    """
+    Calcola la somma dei primi n termini di una sequenza aritmetica.
+    Formula: Sn = n/2 * (2a + (n - 1) * b)
+
+    :param n: numero dei termini da sommare
+    :param a: primo termine
+    :param b: differenza tra i termini
+    :return: somma dei primi n termini
+    """
+    return (n / 2) * (2 * a + (n - 1) * b)
